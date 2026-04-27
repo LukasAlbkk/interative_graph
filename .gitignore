@@ -43,6 +43,7 @@ Thumbs.db
 
 # Arquivos desnecessários (mantém apenas essenciais)
 grafo_*.html
+!grafo_hc_prior.html
 grafo_*.py
 interactive_*.py
 interactive_*.html

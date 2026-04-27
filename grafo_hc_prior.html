@@ -1,0 +1,409 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+
+
+
+
+        </style>
+    </head>
+
+
+    <body>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .custom-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .custom-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .custom-header p {
+            margin: 5px 0 0 0;
+            font-size: 15px;
+            opacity: 0.95;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 3px solid #764ba2;
+        }
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .instruction-icon {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3a4a77;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .top-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .top-nav a {
+            color: #3a4a77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .top-nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <nav class="top-nav">
+        <a href="index.html">Grafo atual</a>
+        <a href="grafo_hc_prior.html">Grafo HC Prior</a>
+    </nav>
+    <div class="custom-header">
+        <h1>Interactive Clinical Relations Graph</h1>
+        <p>HC Prior dataset</p>
+    </div>
+    <div class="instructions">
+        <div class="instructions-grid">
+            <div class="instruction-item">
+                <span class="instruction-icon">H</span>
+                <span><b>Hover:</b> Mouse over nodes for descriptions</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">C</span>
+                <span><b>Click:</b> Select nodes and edges</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">Z</span>
+                <span><b>Zoom:</b> Mouse scroll or navigation buttons</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">P</span>
+                <span><b>Pan:</b> Drag the background</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">M</span>
+                <span><b>Move:</b> Drag any node to reorganize</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">K</span>
+                <span><b>Keyboard:</b> Arrow keys to navigate</span>
+            </div>
+        </div>
+    </div>
+
+        <div class="card" style="width: 100%">
+
+
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+
+
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var network;
+              var container;
+              var options, data;
+
+
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+
+
+                  // Build nodes and edges from compact lists
+                  var nodeIds = [
+                      "race",
+                      "religion",
+                      "sex",
+                      "os_status",
+                      "pediatric_case",
+                      "primary_site",
+                      "rfs_status",
+                      "stage_at_diagnosis",
+                      "pre_therapy_group",
+                      "risk_group",
+                      "os_adjuvanttherapy",
+                      "os_months",
+                      "rfs_months",
+                      "age_at_diagnosis",
+                      "first_treatment_tumor_size_cm",
+                      "first_treatment_miotic_rate_50hpf",
+                      "msi_score",
+                      "tmb_nonsynonymous",
+                      "has_metastasis_sample",
+                      "metastatic_site",
+                      "gene_KIT",
+                      "gene_PDGFRA",
+                      "gene_WILD_TYPE",
+                      "KIT_region_juxtamembrane",
+                      "KIT_region_kinase1",
+                      "KIT_region_kinase2",
+                      "PDGFRA_region_juxtamembrane",
+                      "PDGFRA_region_kinase1",
+                      "PDGFRA_region_kinase2",
+                      "treat_surgery",
+                      "treat_targeted",
+                      "treat_chemotherapy",
+                      "treat_trial",
+                      "best_response_surgery",
+                      "best_response_targeted",
+                      "best_response_chemotherapy",
+                      "best_response_trial",
+                      "var_DEL",
+                      "var_DNP",
+                      "var_INS",
+                      "var_ONP",
+                      "var_SNP",
+                      "var_TNP"
+                  ];
+
+                  var nodeDescriptions = {
+                      race: "RACE\n\nSelf-reported race category for the patient.",
+                      religion: "RELIGION\n\nSelf-reported religion or belief group.",
+                      sex: "SEX\n\nBiological sex recorded for the patient.",
+                      os_status: "OVERALL SURVIVAL STATUS\n\nWhether the patient is alive or deceased.",
+                      pediatric_case: "PEDIATRIC CASE\n\nIndicates if diagnosis occurred in childhood or adolescence.",
+                      primary_site: "PRIMARY SITE\n\nOrgan of origin for the primary GIST tumor.",
+                      rfs_status: "RECURRENCE-FREE SURVIVAL STATUS\n\nWhether recurrence has occurred after treatment.",
+                      stage_at_diagnosis: "STAGE AT DIAGNOSIS\n\nDisease extent at diagnosis (localized, locally advanced, or metastatic).",
+                      pre_therapy_group: "PRE-THERAPY GROUP\n\nClinical grouping before systemic therapy.",
+                      risk_group: "RISK GROUP\n\nRisk stratification based on size, mitotic rate, and site.",
+                      os_adjuvanttherapy: "ADJUVANT THERAPY (OS)\n\nWhether adjuvant therapy was given in the overall survival cohort.",
+                      os_months: "OVERALL SURVIVAL MONTHS\n\nTime from diagnosis to death or last follow-up.",
+                      rfs_months: "RECURRENCE-FREE SURVIVAL MONTHS\n\nTime from treatment to recurrence or last follow-up.",
+                      age_at_diagnosis: "AGE AT DIAGNOSIS\n\nAge in years at the time of diagnosis.",
+                      first_treatment_tumor_size_cm: "TUMOR SIZE AT FIRST TREATMENT\n\nLargest tumor dimension in centimeters.",
+                      first_treatment_miotic_rate_50hpf: "MITOTIC RATE (50 HPF)\n\nNumber of mitoses per 50 high-power fields.",
+                      msi_score: "MSI SCORE\n\nMicrosatellite instability measurement for the tumor.",
+                      tmb_nonsynonymous: "TMB NONSYNONYMOUS\n\nTumor mutational burden (nonsynonymous mutations).",
+                      has_metastasis_sample: "METASTASIS SAMPLE\n\nIndicates if the sample is from a metastatic site.",
+                      metastatic_site: "METASTATIC SITE\n\nAnatomical site of metastasis when present.",
+                      gene_KIT: "KIT GENE\n\nMutation status of KIT, a common driver in GIST.",
+                      gene_PDGFRA: "PDGFRA GENE\n\nMutation status of PDGFRA, another GIST driver.",
+                      gene_WILD_TYPE: "WILD TYPE\n\nNo KIT or PDGFRA driver mutation detected.",
+                      KIT_region_juxtamembrane: "KIT JUxtamembrane REGION\n\nMutation region within the KIT gene.",
+                      KIT_region_kinase1: "KIT KINASE 1 REGION\n\nMutation region within the KIT kinase domain 1.",
+                      KIT_region_kinase2: "KIT KINASE 2 REGION\n\nMutation region within the KIT kinase domain 2.",
+                      PDGFRA_region_juxtamembrane: "PDGFRA JUxTAMEMBRANE REGION\n\nMutation region within PDGFRA juxtamembrane.",
+                      PDGFRA_region_kinase1: "PDGFRA KINASE 1 REGION\n\nMutation region within PDGFRA kinase domain 1.",
+                      PDGFRA_region_kinase2: "PDGFRA KINASE 2 REGION\n\nMutation region within PDGFRA kinase domain 2.",
+                      treat_surgery: "SURGERY\n\nSurgical treatment performed.",
+                      treat_targeted: "TARGETED THERAPY\n\nTargeted treatment such as imatinib or sunitinib.",
+                      treat_chemotherapy: "CHEMOTHERAPY\n\nSystemic cytotoxic chemotherapy.",
+                      treat_trial: "CLINICAL TRIAL\n\nTreatment received as part of a clinical trial.",
+                      best_response_surgery: "BEST RESPONSE TO SURGERY\n\nBest recorded response after surgical treatment.",
+                      best_response_targeted: "BEST RESPONSE TO TARGETED THERAPY\n\nBest recorded response after targeted therapy.",
+                      best_response_chemotherapy: "BEST RESPONSE TO CHEMOTHERAPY\n\nBest recorded response after chemotherapy.",
+                      best_response_trial: "BEST RESPONSE IN TRIAL\n\nBest recorded response for trial treatment.",
+                      var_DEL: "DELETION VARIANT\n\nDeletion-type genetic variant.",
+                      var_DNP: "DNP VARIANT\n\nDi-nucleotide polymorphism variant type.",
+                      var_INS: "INSERTION VARIANT\n\nInsertion-type genetic variant.",
+                      var_ONP: "ONP VARIANT\n\nOligo-nucleotide polymorphism variant type.",
+                      var_SNP: "SNP VARIANT\n\nSingle nucleotide polymorphism variant type.",
+                      var_TNP: "TNP VARIANT\n\nTri-nucleotide polymorphism variant type."
+                  };
+
+                  nodes = new vis.DataSet(nodeIds.map(function (id) {
+                      var description = nodeDescriptions[id] || (id.toUpperCase() + "\n\nNo description available.");
+                      return {
+                          id: id,
+                          label: id,
+                          title: description,
+                          color: "#D2E5FF",
+                          font: { color: "#000000" },
+                          shape: "dot",
+                          size: 30
+                      };
+                  }));
+
+                  var edgePairs = [
+                      ["primary_site", "stage_at_diagnosis"],
+                      ["primary_site", "best_response_surgery"],
+                      ["primary_site", "treat_surgery"],
+                      ["primary_site", "treat_chemotherapy"],
+                      ["rfs_status", "metastatic_site"],
+                      ["rfs_status", "msi_score"],
+                      ["rfs_status", "pre_therapy_group"],
+                      ["stage_at_diagnosis", "rfs_status"],
+                      ["stage_at_diagnosis", "rfs_months"],
+                      ["stage_at_diagnosis", "os_status"],
+                      ["stage_at_diagnosis", "os_months"],
+                      ["stage_at_diagnosis", "best_response_surgery"],
+                      ["stage_at_diagnosis", "treat_surgery"],
+                      ["stage_at_diagnosis", "risk_group"],
+                      ["stage_at_diagnosis", "KIT_region_kinase2"],
+                      ["pre_therapy_group", "best_response_targeted"],
+                      ["risk_group", "rfs_status"],
+                      ["risk_group", "treat_targeted"],
+                      ["risk_group", "rfs_months"],
+                      ["os_adjuvanttherapy", "rfs_status"],
+                      ["os_adjuvanttherapy", "best_response_targeted"],
+                      ["os_adjuvanttherapy", "os_status"],
+                      ["os_adjuvanttherapy", "pre_therapy_group"],
+                      ["rfs_months", "os_months"],
+                      ["first_treatment_tumor_size_cm", "best_response_surgery"],
+                      ["first_treatment_miotic_rate_50hpf", "os_adjuvanttherapy"],
+                      ["first_treatment_miotic_rate_50hpf", "risk_group"],
+                      ["tmb_nonsynonymous", "pediatric_case"],
+                      ["has_metastasis_sample", "os_status"],
+                      ["metastatic_site", "has_metastasis_sample"],
+                      ["gene_KIT", "gene_WILD_TYPE"],
+                      ["gene_KIT", "best_response_targeted"],
+                      ["gene_KIT", "PDGFRA_region_kinase2"],
+                      ["gene_KIT", "var_DEL"],
+                      ["gene_KIT", "risk_group"],
+                      ["gene_KIT", "first_treatment_tumor_size_cm"],
+                      ["gene_PDGFRA", "gene_WILD_TYPE"],
+                      ["gene_PDGFRA", "rfs_status"],
+                      ["KIT_region_juxtamembrane", "gene_KIT"],
+                      ["KIT_region_juxtamembrane", "has_metastasis_sample"],
+                      ["PDGFRA_region_juxtamembrane", "gene_PDGFRA"],
+                      ["PDGFRA_region_kinase2", "gene_PDGFRA"],
+                      ["treat_surgery", "best_response_surgery"],
+                      ["treat_surgery", "has_metastasis_sample"],
+                      ["treat_surgery", "rfs_status"],
+                      ["treat_surgery", "rfs_months"],
+                      ["treat_surgery", "os_status"],
+                      ["treat_surgery", "os_months"],
+                      ["treat_surgery", "os_adjuvanttherapy"],
+                      ["treat_targeted", "best_response_targeted"],
+                      ["treat_targeted", "os_adjuvanttherapy"],
+                      ["treat_targeted", "os_status"],
+                      ["treat_targeted", "tmb_nonsynonymous"],
+                      ["treat_chemotherapy", "os_adjuvanttherapy"],
+                      ["best_response_targeted", "os_status"],
+                      ["best_response_targeted", "best_response_trial"],
+                      ["best_response_trial", "treat_trial"],
+                      ["var_DEL", "tmb_nonsynonymous"],
+                      ["var_INS", "var_DEL"],
+                      ["var_SNP", "tmb_nonsynonymous"]
+                  ];
+
+                  edges = new vis.DataSet(edgePairs.map(function (pair) {
+                      return { from: pair[0], to: pair[1], arrows: "to", width: 2 };
+                  }));
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (var nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"configure": {"enabled": false}, "edges": {"color": {"color": "#666666", "highlight": "#FF4444", "hover": "#FF4444", "opacity": 0.8}, "arrows": {"to": {"enabled": true, "scaleFactor": 1.0, "type": "arrow"}}, "smooth": {"enabled": true, "type": "cubicBezier", "forceDirection": "vertical", "roundness": 0.4}, "width": 2, "selectionWidth": 3}, "nodes": {"borderWidth": 2, "borderWidthSelected": 4, "color": {"border": "#2B7CE9", "background": "#D2E5FF", "highlight": {"border": "#2B7CE9", "background": "#FFA500"}, "hover": {"border": "#2B7CE9", "background": "#FFEB3B"}}, "font": {"size": 14, "face": "Arial", "color": "#000000", "bold": {"size": 14}}, "shape": "box", "margin": {"top": 10, "bottom": 10, "left": 15, "right": 15}, "widthConstraint": {"minimum": 120, "maximum": 200}}, "layout": {"hierarchical": {"enabled": true, "direction": "UD", "sortMethod": "directed", "shakeTowards": "leaves", "levelSeparation": 180, "nodeSpacing": 150, "treeSpacing": 200, "blockShifting": true, "edgeMinimization": true, "parentCentralization": true}}, "physics": {"enabled": true, "hierarchicalRepulsion": {"centralGravity": 0.0, "springLength": 200, "springConstant": 0.01, "nodeDistance": 180, "damping": 0.09, "avoidOverlap": 1}, "solver": "hierarchicalRepulsion", "stabilization": {"enabled": true, "iterations": 1000, "updateInterval": 50}}, "interaction": {"dragNodes": true, "dragView": true, "hideEdgesOnDrag": false, "hideNodesOnDrag": false, "hover": true, "hoverConnectedEdges": true, "keyboard": {"enabled": true, "speed": {"x": 10, "y": 10, "zoom": 0.02}, "bindToWindow": true}, "multiselect": true, "navigationButtons": true, "selectable": true, "selectConnectedEdges": true, "tooltipDelay": 100, "zoomView": true, "zoomSpeed": 0.5}};
+
+
+
+
+
+                  network = new vis.Network(container, data, options);
+
+
+
+
+
+
+
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+
+    <div class="footer">
+        Created with PyVis & NetworkX | Data visualization for clinical research
+    </div>
+</body>
+</html>
