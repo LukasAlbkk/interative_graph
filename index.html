@@ -112,7 +112,30 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        .top-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .top-nav a {
+            color: #3a4a77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .top-nav a:hover {
+            text-decoration: underline;
+        }
     </style>
+    <nav class="top-nav">
+        <a href="index.html">Grafo atual</a>
+        <a href="grafo_hc_prior.html">Grafo HC Prior</a>
+    </nav>
     <div class="custom-header">
         <h1>📊 Interactive Clinical Relations Graph</h1>
         <p>Analysis of Prognostic Factors in Oncology - GIST (Gastrointestinal Stromal Tumors)</p>
